@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Overview · GestCom</title>
+  <meta name="description" content="GestCom is a local-first operations workspace for clients, products, and orders — with a live dashboard, inventory alerts, and backups.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="GestCom — local-first operations workspace">
+  <meta property="og:description" content="Manage clients, products, and orders with a live dashboard, inventory alerts, CSV exports, and JSON backups. No backend required.">
+  <meta name="twitter:card" content="summary">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f4f6f3">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <script>
+    try {
+      var raw = localStorage.getItem('gestcom.workspace.v1');
+      var pref = raw ? ((JSON.parse(raw).settings || {}).theme || 'system') : 'system';
+      var dark = pref === 'dark' || ((pref === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    } catch (e) { /* default theme */ }
+  </script>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/store.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <noscript>
+    <div class="noscript">
+      <strong>GestCom needs JavaScript</strong>
+      <p>This workspace keeps its data in your browser. Enable JavaScript to open the dashboard and manage clients, products, and orders.</p>
+    </div>
+  </noscript>
+
+  <a class="skip-link" href="#view">Skip to content</a>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
+      <a class="brand" href="#/dashboard" aria-label="GestCom dashboard">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M16.8 8.2A6 6 0 1 0 18 14.4V12h-5.2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="brand-copy">
+          <strong>GestCom</strong>
+          <small>Operations workspace</small>
+        </span>
+      </a>
+
+      <nav class="nav">
+        <p class="nav-label">Workspace</p>
+        <a class="nav-link" href="#/dashboard" data-nav="dashboard">
+          <svg class="icon" aria-hidden="true"><use href="#i-grid"/></svg>
+          <span>Overview</span>
+        </a>
+        <a class="nav-link" href="#/orders" data-nav="orders">
+          <svg class="icon" aria-hidden="true"><use href="#i-receipt"/></svg>
+          <span>Orders</span>
+          <span class="nav-count" id="nav-orders-badge" hidden></span>
+        </a>
+        <a class="nav-link" href="#/clients" data-nav="clients">
+          <svg class="icon" aria-hidden="true"><use href="#i-users"/></svg>
+          <span>Clients</span>
+        </a>
+        <a class="nav-link" href="#/products" data-nav="products">
+          <svg class="icon" aria-hidden="true"><use href="#i-box"/></svg>
+          <span>Products</span>
+          <span class="nav-count nav-count--warn" id="nav-products-badge" hidden></span>
+        </a>
+        <p class="nav-label">Manage</p>
+        <a class="nav-link" href="#/data" data-nav="data">
+          <svg class="icon" aria-hidden="true"><use href="#i-database"/></svg>
+          <span>Data &amp; backups</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="usage-card">
+          <div class="usage-top">
+            <span>Local workspace</span>
+            <span id="usage-pct">—</span>
+          </div>
+          <div class="usage-bar" aria-hidden="true"><span id="usage-bar"></span></div>
+          <p id="storage-note">Loading workspace…</p>
+        </div>
+        <div class="user-card">
+          <span class="avatar avatar--0" aria-hidden="true">SR</span>
+          <div class="user-meta">
+            <strong>Sofia Renard</strong>
+            <span>Store manager</span>
+          </div>
+          <a class="icon-btn" href="#/data" aria-label="Workspace settings">
+            <svg class="icon" aria-hidden="true"><use href="#i-sliders"/></svg>
+          </a>
+        </div>
+      </div>
+    </aside>
+
+    <div class="nav-scrim" data-action="close-nav" aria-hidden="true"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="icon-btn mobile-menu-btn" type="button" data-action="toggle-nav" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
+          <svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg>
+        </button>
+
+        <div class="search" role="search">
+          <svg class="icon search-icon" aria-hidden="true"><use href="#i-search"/></svg>
+          <input id="global-search" type="search" placeholder="Search orders, clients, products…" autocomplete="off" spellcheck="false" aria-label="Search workspace" aria-controls="search-panel">
+          <kbd class="search-kbd" aria-hidden="true">/</kbd>
+          <div class="search-panel" id="search-panel" hidden></div>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="btn btn-primary" type="button" data-action="new-order">
+            <svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>
+            <span class="btn-label">New order</span>
+          </button>
+          <button class="icon-btn" type="button" id="theme-toggle" data-action="toggle-theme" aria-label="Switch theme" title="Switch theme">
+            <svg class="icon theme-icon theme-icon--sun" aria-hidden="true"><use href="#i-sun"/></svg>
+            <svg class="icon theme-icon theme-icon--moon" aria-hidden="true"><use href="#i-moon"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="page" id="view" tabindex="-1"></main>
+    </div>
+  </div>
+
+  <dialog id="modal" aria-labelledby="modal-title"></dialog>
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+  <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></symbol>
+    <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 3h12a1 1 0 0 1 1 1v17l-3-2-2 2-2-2-2 2-2-2-3 2V4a1 1 0 0 1 1-1Z"/><path d="M9 8h6M9 12h6M9 16h4"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></symbol>
+    <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 15H6L5 6"/><path d="M10 11v6M14 11v6"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></symbol>
+    <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></symbol>
+    <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5"/><path d="m6 11 6-6 6 6"/></symbol>
+    <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m6 13 6 6 6-6"/></symbol>
+    <symbol id="i-trending-up" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+    <symbol id="i-trending-down" viewBox="0 0 24 24"><path d="m3 7 6 6 4-4 8 8"/><path d="M15 17h6v-6"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-printer" viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8" rx="1.5"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20.5 12a8.5 8.5 0 1 1-2.5-6"/><path d="M20.5 4v5h-5"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3"/><path d="M1 14h6M9 8h6M17 16h6"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.6 13.4 12 22l-9-9V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.5"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></symbol>
+    <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="m12 3 1.9 4.6L18.5 9l-4.6 1.9L12 15.5l-1.9-4.6L5.5 9l4.6-1.4Z"/><path d="m19 15 .9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9Z"/></symbol>
+  </svg>
+</body>
+</html>
