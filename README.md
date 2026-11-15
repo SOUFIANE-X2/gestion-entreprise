@@ -2,6 +2,8 @@
 
 **A local-first operations workspace for small stores.** Manage clients, products, and orders from one clean dashboard — with inventory alerts, revenue insights, CSV exports, and JSON backups. Built with plain HTML, CSS, and JavaScript. No backend, no dependencies, no build step.
 
+**Live demo:** [soufiane-x2.github.io/gestion-entreprise](https://soufiane-x2.github.io/gestion-entreprise/)
+
 ![GestCom dashboard](assets/images/dashboard.png)
 
 ## Why this exists
@@ -38,8 +40,8 @@ No frameworks, no runtime dependencies, no network calls.
 ## Run it locally
 
 ```bash
-git clone <your-repository-url>
-cd gestcom
+git clone https://github.com/SOUFIANE-X2/gestion-entreprise.git
+cd gestion-entreprise
 npx serve .
 ```
 

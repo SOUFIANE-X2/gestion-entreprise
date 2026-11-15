@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://soufiane-x2.github.io/gestion-entreprise/sitemap.xml
